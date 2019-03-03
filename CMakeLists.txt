@@ -103,9 +103,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES kfilter
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  INCLUDE_DIRS include
+  LIBRARIES kfilter
+  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -116,7 +116,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -124,6 +124,20 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/kfilter.cpp
 # )
+
+ADD_DEFINITIONS(-O3 -DNDEBUG)
+
+add_library(kfilter
+        include/kfilter/ekfilter.hpp
+        include/kfilter/ekfilter_impl.hpp
+        include/kfilter/kfilter.hpp
+        include/kfilter/ekfilter_impl.hpp
+        include/kfilter/kmatrix.hpp
+        include/kfilter/kmatrix_impl.hpp
+        include/kfilter/ktypes.hpp
+        include/kfilter/kvector.hpp
+        include/kfilter/kvector_impl.hpp
+        src/kstatics.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -149,6 +163,22 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+target_link_libraries(kfilter ${catkin_LIBRARIES})
+
+SET_TARGET_PROPERTIES(kfilter PROPERTIES LINKER_LANGUAGE CXX)
+
+add_executable(EKFilter samples/EKFilter/ekfilter.cpp)
+target_link_libraries(EKFilter ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(Example samples/Example/example.cpp samples/Example/plane.cpp samples/Example/simple_plane.cpp)
+target_link_libraries(Example ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(KMatrix samples/KMatrix/kmatrix.cpp)
+target_link_libraries(KMatrix ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(KVector samples/KVector/kvector.cpp)
+target_link_libraries(KVector ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 #############
 ## Install ##
