@@ -128,7 +128,6 @@ include_directories(
 ADD_DEFINITIONS(-O3 -DNDEBUG)
 
 add_library(kfilter
-        include/kfilter/ekfilter.hpp
         include/kfilter/ekfilter_impl.hpp
         include/kfilter/kfilter.hpp
         include/kfilter/ekfilter_impl.hpp

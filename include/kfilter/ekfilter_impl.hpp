@@ -887,5 +887,4 @@ namespace Kalman {
     }
 
 }
-
 #endif //PROJECT_EKFILTER_IMPL_HPP
