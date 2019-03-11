@@ -35,70 +35,53 @@
 //! \brief Contains the implementation of the \c KFilter base template class.
 
 namespace Kalman {
+    template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
+    KFilter<T. BEG. OQ, OVR, DBG>::~KFilter(){}
 
     template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
-    KFilter<T, BEG, OQ, OVR, DBG>::~KFilter() {}
+    void KFilter<T, BEG, OQ, OVR, DBG>::makeBaseB(){}
 
     template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
-    void KFilter<T, BEG, OQ, OVR, DBG>::makeBaseB() {}
-
-    template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
-    void KFilter<T, BEG, OQ, OVR, DBG>::makeB() {}
+    void KFilter<T, BEG, OQ, OVR, DBG>::makeB(){}
 
     template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
     void KFilter<T, BEG, OQ, OVR, DBG>::makeProcess() {
-
         // x = Ax + Bu + Ww    n.1 = n.n * n.1 + n.nu * nu.1
         makeB();
-
         K_UINT_32 i, j;
         x__.resize(n);
-
-        for (i = BEG; i < n + BEG; ++i) {
-
+        for(i = BEG; i < n + BEG; ++i){
             x__(i) = T(0.0);
-
-            for (j = BEG; j < n + BEG; ++j)
-                x__(i) += A(i,j) * x(j);
-
-            for (j = BEG; j < nu + BEG; ++j)
-                x__(i) += B(i,j) * u(j);
-
+            for(j = BEG; j < n + BEG; ++j){
+                x__(i) += A(i, j) * x(j);
+            }
+            for(j = BEG; j < nu + BEG; ++j){
+                x__(i) += A(i, j) * u(j);
+            }
         }
-
         x.swap(x__);
-
     }
 
     template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
     void KFilter<T, BEG, OQ, OVR, DBG>::makeMeasure() {
-
         // z = Hx + Vv
         K_UINT_32 i, j;
-
         z.resize(m);
-        for (i = BEG; i < m + BEG; ++i) {
-
+        for(i = BEG; i < m + BEG; ++i){
             z(i) = T(0.0);
-
-            for (j = BEG; j < n + BEG; ++j)
+            for(j = BEG; j < n + BEG; ++j){
                 z(i) += H(i,j) * x(j);
-
+            }
         }
-
     }
 
     template<typename T, K_UINT_32 BEG, bool OQ, bool OVR, bool DBG>
-    void KFilter<T, BEG, OQ, OVR, DBG>::sizeUpdate() {
-
-        if (flags & ( KALMAN_N_MODIFIED | KALMAN_NU_MODIFIED ) ) {
+    void KFilter<T, BEG, OQ, OVR, DBG>::sizeUpdate(){
+        if(flags & (KALMAN_M_MODIFIED | KALMAN_NU_MODIFIED)){
             B.resize(n, nu);
             makeBaseB();
         }
-
         EKFilter<T, BEG, OQ, OVR, DBG>::sizeUpdate();
     }
-
 }
-
 #endif //PROJECT_KFILTER_IMPL_HPP
