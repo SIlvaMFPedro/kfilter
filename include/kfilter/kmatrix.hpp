@@ -44,54 +44,126 @@ namespace Kalman {
     template<typename T, K_UINT_32 BEG, bool DBG>
     class KMatrix {
         public:
-            typedef T type;
-            enum{
-                beg = BEG;
+
+            typedef T type;          //!< Type of objects contained in the matrix.
+
+            enum { beg = BEG         //!< Starting index of matrix, either 0 or 1.
             };
+
+            //! \name Constructors and destructor.
+            //@{
+
+            //! Default constructor. Creates an empty matrix.
             inline KMatrix();
+
+            //! Creates an \c m by \c n matrix of default instances of \c T.
             inline KMatrix(K_UINT_32 m, K_UINT_32 n);
+
+            //! Creates an \c m by \c n matrix of copies of \c a.
             inline KMatrix(K_UINT_32 m, K_UINT_32 n, const T& a);
+
+            //! Creates an \c m by \c n matrix from an array of instances of \c T.
             inline KMatrix(K_UINT_32 m, K_UINT_32 n, const T* v);
+
+            //! Copy constructor. Performs a deep copy.
             inline KMatrix(const KMatrix& M);
+
+            //! Destructor.
             inline ~KMatrix();
+
+            //@}
+
+            //! \name Member access functions.
+            //@{
+
+            //! Returns the element <tt>(i,j)</tt>.
             inline T& operator()(K_UINT_32 i, K_UINT_32 j);
+
+            //! Returns the element <tt>(i,j)</tt>, \c const version.
             inline const T& operator()(K_UINT_32 i, K_UINT_32 j) const;
+
+            //! Returns \a m_, the number of rows of the matrix.
             inline K_UINT_32 nrow() const;
+
+            //! Returns \a n_, the number of columns of the matrix.
             inline K_UINT_32 ncol() const;
+
+            //@}
+
+            //! Resizes the matrix. Resulting matrix contents are undefined.
             inline void resize(K_UINT_32 m, K_UINT_32 n);
+
+            //! Assigns a copy of \c a to all elements of the matrix.
             inline KMatrix& operator=(const T& a);
+
+            //! Copy assignment operator. Performs a deep copy.
             inline KMatrix& operator=(const KMatrix& M);
+
+            //! Copies a C-style array of instances of \c T in an \c m by \c n matrix.
             inline void assign(K_UINT_32 m, K_UINT_32 n, const T* v);
+
+            //! Constant-time swap function between two matrices.
             inline void swap(KMatrix& M);
+
+            //! \name Streaming functions
+            //@{
+
+            //! Reads a matrix from a stream.
             inline void get(std::istream& is);
+
+            //! Writes a matrix to a stream.
             inline void put(std::ostream& os) const;
 
+            //@}
+
         private:
+            //! Array of pointers to rows of \a Mimpl_.
+
+            //! In fact, \a vimpl_ is such that
+            //! <tt>&vimpl_[i][beg] == &Mimpl_[i*n_]</tt>.
             std::vector<T*> vimpl_;
-            std::vector<T> Mimpl_;
-            T** M;
-            K_UINT_32 m_;
-            K_UINT_32 n_;
+            std::vector<T> Mimpl_;    //!< Underlying vector implementation.
+
+            //! Pointer to the start of \a vimpl_.
+
+            //! In fact, \a M_ is such that <tt>&M_[beg] == &vimpl_[0]</tt>.
+            //! This means also that <tt>&M_[beg][beg] == &Mimpl_[0][0]</tt>.
+            //! \warning <tt>M_[0]</tt> is not defined for
+            //! <tt>beg != 0</tt>.
+            T** M_;
+            K_UINT_32 m_;             //!< Number of rows of matrix.
+            K_UINT_32 n_;             //!< Number of columns of matrix.
+
+            //! Helper function to initialize matrix.
             inline void init(K_UINT_32 m, K_UINT_32 n);
     };
 
+    //! Reads a matrix from a stream.
     template<typename T, K_UINT_32 BEG, bool DBG>
-    inline std::istream& operator>>(std::istream& is, KMatrix<T, BEG, DBG>& M);
+    inline std::istream& operator>>(std::istream& is,
+                                    KMatrix<T, BEG, DBG>& M);
 
+    //! Writes a matrix to a stream.
     template<typename T, K_UINT_32 BEG, bool DBG>
-    inline std::istream& operator>>(std::ostream& os, const KMatrix<T, BEG, DBG>& M);
+    inline std::ostream& operator<<(std::ostream& os,
+                                    const KMatrix<T, BEG, DBG>& M);
 
+    //! Handle type to a matrix printing context.
     typedef unsigned short KMatrixContext;
 
-    extern KMatrixContext  DEFAULT_MATRIX_CONTEXT;
+    //! Default matrix printing context object.
+    extern KMatrixContext DEFAULT_MATRIX_CONTEXT;
 
+    //! Creates a matrix printing context.
     KMatrixContext createKMatrixContext(std::string elemDelim = " ",
                                         std::string rowDelim = "\n",
                                         std::string startDelim = "",
                                         std::string endDelim = "",
                                         unsigned prec = 4);
 
+    //! Selects a matrix printing context as the current context.
     KMatrixContext selectKMatrixContext(KMatrixContext c);
+
 }
 
 #include <kfilter/kmatrix_impl.hpp>
