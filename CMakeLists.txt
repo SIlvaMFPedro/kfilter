@@ -170,8 +170,8 @@ SET_TARGET_PROPERTIES(kfilter PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(EKFilter samples/EKFilter/ekfilter.cpp)
 target_link_libraries(EKFilter ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-add_executable(Example samples/Example/example.cpp samples/Example/plane.cpp samples/Example/simple_plane.cpp)
-target_link_libraries(Example ${PROJECT_NAME} ${catkin_LIBRARIES})
+#add_executable(Example samples/Example/example.cpp samples/Example/plane.cpp samples/Example/simple_plane.cpp)
+#target_link_libraries(Example ${PROJECT_NAME} ${catkin_LIBRARIES})
 
 add_executable(KMatrix samples/KMatrix/kmatrix.cpp)
 target_link_libraries(KMatrix ${PROJECT_NAME} ${catkin_LIBRARIES})
